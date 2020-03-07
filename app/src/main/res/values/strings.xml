@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Sumsar Taxi</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone number</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="registered">Already Registered ? Login Now !</string>
+    <string name="not_registered">Not Registered ? Register Now !</string>
+    <string name="login">Login</string>
+    <string name="change_password">Change Password</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_password">New Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="token">Token</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="open_session">Open session</string>
+    <string name="conn_error">Connection error</string>
+    <string name="app_running">App runs</string>
+    <string name="close_session">Close session</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="wait_change_location">Please wait until change location</string>
+    <string name="you">Yau</string>
+    <string name="meter">m</string>
+    <string name="state_number">State number</string>
+    <string name="model">Model</string>
+    <string name="add_transport">Add transport</string>
+    <string name="select_type">Select type</string>
+    <string name="state_number_error">Please enter transport state number</string>
+    <string name="model_error">Please enter transport model</string>
+
+    <string name="lbl_set_profile_photo">Set profile image</string>
+    <string name="lbl_take_camera_picture">Take a picture</string>
+    <string name="lbl_choose_from_gallery">Choose from gallery</string>
+    <string name="toast_image_intent_null">Image picker option is missing!</string>
+    <string name="transport_image_error">Please select transport image</string>
+    <string name="wait">Wait</string>
+</resources>
