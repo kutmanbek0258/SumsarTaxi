@@ -29,7 +29,7 @@ import io.socket.client.Socket;
 
 public class LocationService extends Service {
 
-    private TransportApplication application;
+    private TaxiDriverApplication application;
     private Socket socket;
 
     private final LocationServiceBinder binder = new LocationServiceBinder();
@@ -101,7 +101,7 @@ public class LocationService extends Service {
         Log.i(TAG, "onCreate");
         tc = new TimerCounter();
         startForeground(12345678, getNotificationO());
-        application = (TransportApplication)getApplication();
+        application = (TaxiDriverApplication)getApplication();
         socket = application.getSocket();
     }
 

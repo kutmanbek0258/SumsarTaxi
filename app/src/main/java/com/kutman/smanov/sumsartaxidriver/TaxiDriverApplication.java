@@ -8,7 +8,7 @@ import com.kutman.smanov.sumsartaxidriver.models.User;
 
 import io.socket.client.Socket;
 
-public class TransportApplication extends Application {
+public class TaxiDriverApplication extends Application {
 
     private Socket mSocket;
     private User user;

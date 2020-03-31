@@ -43,4 +43,7 @@ public interface RetrofitInterface {
 
     @POST("transport_edit/{email}")
     Observable<Response> transportEdit(@Path("email") String email, @Body Transport transport);
+
+    @POST("transport_is_user/{email}")
+    Observable<Response> transportIsUser(@Path("email") String email, @Body User user);
 }

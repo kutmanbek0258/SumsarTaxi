@@ -9,6 +9,7 @@ public class User {
     private String password;
     private String newPassword;
     private String token;
+    private boolean transport;
 
     public void set_id(String _id) {
         this._id = _id;
@@ -34,6 +35,10 @@ public class User {
         this.token = token;
     }
 
+    public void setTransport(boolean transport) {
+        this.transport = transport;
+    }
+
     public String get_id() {
         return _id;
     }
@@ -44,5 +49,9 @@ public class User {
 
     public String getPhone() {
         return phone;
+    }
+
+    public boolean isTransport() {
+        return transport;
     }
 }

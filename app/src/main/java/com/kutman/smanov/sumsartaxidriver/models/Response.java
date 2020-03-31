@@ -4,6 +4,7 @@ public class Response {
 
     private String message;
     private String token;
+    private boolean result;
 
     public String getMessage() {
         return message;
@@ -11,5 +12,9 @@ public class Response {
 
     public String getToken() {
         return token;
+    }
+
+    public boolean isResult() {
+        return result;
     }
 }

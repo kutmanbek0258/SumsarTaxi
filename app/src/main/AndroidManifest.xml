@@ -20,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="com.kutman.smanov.sumsartaxidriver.TransportApplication"
+        android:name=".TaxiDriverApplication"
         android:networkSecurityConfig="@xml/network_security_config">
 
         <meta-data
@@ -31,7 +31,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name="com.kutman.smanov.sumsartaxidriver.activities.StartActivity">
+        <activity android:name=".activities.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,16 +39,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.kutman.smanov.sumsartaxidriver.activities.ImagePickerActivity"/>
+        <activity android:name=".activities.ImagePickerActivity"/>
 
-        <activity android:name="com.kutman.smanov.sumsartaxidriver.activities.TransportAddActivity"/>
+        <activity android:name=".activities.TransportAddActivity"/>
 
-        <activity android:name="com.kutman.smanov.sumsartaxidriver.activities.MainActivity"/>
+        <activity android:name=".activities.MainActivity"/>
 
-        <activity android:name="com.kutman.smanov.sumsartaxidriver.activities.MapActivity"
+        <activity android:name=".activities.MapActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <service android:name="com.kutman.smanov.sumsartaxidriver.LocationService"/>
+        <service android:name=".LocationService"/>
 
         <!-- uCrop cropping activity -->
         <activity

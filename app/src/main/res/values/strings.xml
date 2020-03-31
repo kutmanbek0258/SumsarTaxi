@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sumsar Taxi</string>
+    <string name="app_name">Sumsar Taxi(Drivers)</string>
     <string name="name">Name</string>
     <string name="phone">Phone number</string>
     <string name="password">Password</string>
@@ -19,7 +19,7 @@
     <string name="close_session">Close session</string>
     <string name="permission_denied">Permission denied</string>
     <string name="wait_change_location">Please wait until change location</string>
-    <string name="you">Yau</string>
+    <string name="you">You</string>
     <string name="meter">m</string>
     <string name="state_number">State number</string>
     <string name="model">Model</string>

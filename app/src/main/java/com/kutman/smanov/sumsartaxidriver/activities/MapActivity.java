@@ -39,10 +39,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.kutman.smanov.sumsartaxidriver.R;
-import com.kutman.smanov.sumsartaxidriver.TransportApplication;
+import com.kutman.smanov.sumsartaxidriver.TaxiDriverApplication;
 import com.kutman.smanov.sumsartaxidriver.data.UserData;
 import com.kutman.smanov.sumsartaxidriver.models.Point;
 import com.kutman.smanov.sumsartaxidriver.models.Request;
+import com.kutman.smanov.sumsartaxidriver.models.Response;
 import com.kutman.smanov.sumsartaxidriver.models.Session;
 import com.kutman.smanov.sumsartaxidriver.models.Transport;
 import com.kutman.smanov.sumsartaxidriver.models.TransportList;
@@ -119,7 +120,7 @@ public class MapActivity extends AppCompatActivity implements LocationListener, 
     private final int mapPaddingBottom = 160;
     private final int animateCameraDuration = 1500;
 
-    private TransportApplication application;
+    private TaxiDriverApplication application;
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final int TRANSPORT_ADD_REQUEST = 100;
@@ -131,48 +132,42 @@ public class MapActivity extends AppCompatActivity implements LocationListener, 
 
         transportSession = new TransportSession(getApplicationContext());
 
-        if(transportSession.isLoggedIn()){
-            application = (TransportApplication)getApplication();
+        application = (TaxiDriverApplication)getApplication();
 
-            context = getApplicationContext();
+        context = getApplicationContext();
 
-            mSubscriptions = new CompositeSubscription();
+        mSubscriptions = new CompositeSubscription();
 
-            session = new UserSession(getApplicationContext());
-            userData = new UserData(getApplicationContext());
-            user = userData.getUserDetails();
+        session = new UserSession(getApplicationContext());
+        userData = new UserData(getApplicationContext());
+        user = userData.getUserDetails();
 
-            initViews();
+        initViews();
 
-            if(session.isLoggedIn()){
-                IO.Options opts = new IO.Options();
-                opts.forceNew = true;
-                opts.query = "token=" + user.get("token");
-                try {
-                    socket = IO.socket(Constants.BASE_URL,opts);
-                    socket.connect();
-                    application.setSocket(socket);
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
+        if(session.isLoggedIn()){
+            IO.Options opts = new IO.Options();
+            opts.forceNew = true;
+            opts.query = "token=" + user.get("token");
+            try {
+                socket = IO.socket(Constants.BASE_URL,opts);
+                socket.connect();
+                application.setSocket(socket);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
-            socket.on(Socket.EVENT_CONNECT,onConnect);
-            socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
-            socket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-            socket.on(Constants.CLIENT_TRANSPORT_GO_RESPONSE,onGoResponse);
-            socket.on(Constants.CLIENT_TRANSPORT_STOP_RESPONSE, onStopResponse);
-            socket.on(Constants.CLIENTS_TRANSPORT_GO,onGo);
-            socket.on(Constants.CLIENTS_TRANSPORT_MOVE,onMove);
-            socket.on(Constants.CLIENTS_TRANSPORT_STOP,onStop);
-            socket.on(Constants.CLIENTS_TRANSPORT_DISCONNECT,onDisconnect);
-            socket.on(Constants.CLIENT_TRANSPORT_ACTIVE_LIST,onTransportList);
-
-            application.setBackgroundMode(false);
-        }else {
-            Intent intent = new Intent(MapActivity.this, TransportAddActivity.class);
-            startActivity(intent);
-            finish();
         }
+        socket.on(Socket.EVENT_CONNECT,onConnect);
+        socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        socket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        socket.on(Constants.CLIENT_TRANSPORT_GO_RESPONSE,onGoResponse);
+        socket.on(Constants.CLIENT_TRANSPORT_STOP_RESPONSE, onStopResponse);
+        socket.on(Constants.CLIENTS_TRANSPORT_GO,onGo);
+        socket.on(Constants.CLIENTS_TRANSPORT_MOVE,onMove);
+        socket.on(Constants.CLIENTS_TRANSPORT_STOP,onStop);
+        socket.on(Constants.CLIENTS_TRANSPORT_DISCONNECT,onDisconnect);
+        socket.on(Constants.CLIENT_TRANSPORT_ACTIVE_LIST,onTransportList);
+
+        application.setBackgroundMode(false);
     }
 
     @Override
@@ -310,10 +305,6 @@ public class MapActivity extends AppCompatActivity implements LocationListener, 
                 }
                 emitMove(location);
             }
-        }
-
-        if(!isLastState){
-            getLastState(user.get("token"),user.get("email"),application.getUser());
         }
     }
 
@@ -674,11 +665,15 @@ public class MapActivity extends AppCompatActivity implements LocationListener, 
             public void onNext(User resUser) {
                 application.setUser(resUser);
                 btGo.setVisibility(View.VISIBLE);
-                getTransport(user.get("token"), user.get("email"), resUser);
                 if(!active_transport_list){
                     emitTransportList(application.getLastLocation());
                 }
                 authorized = true;
+                if(!transportSession.isLoggedIn()){
+                    isUserTransport(user.get("token"),user.get("email"),resUser);
+                }else {
+                    getTransport(user.get("token"), user.get("email"), resUser);
+                }
             }
         }));
     }
@@ -706,12 +701,12 @@ public class MapActivity extends AppCompatActivity implements LocationListener, 
                 }));
     }
 
-    private void getTransport(String token, String email, User user){
+    private void isUserTransport(String token, String email, User reqUser){
         mSubscriptions.add(NetworkUtil.getRetrofit(token)
-        .getUserTransport(email, user)
+        .transportIsUser(email, reqUser)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .subscribe(new Observer<Transport>() {
+        .subscribe(new Observer<Response>() {
             @Override
             public void onCompleted() {
 
@@ -722,11 +717,43 @@ public class MapActivity extends AppCompatActivity implements LocationListener, 
             }
 
             @Override
-            public void onNext(Transport transport) {
-                application.setTransportSelected(true);
-                application.setTransport(transport);
+            public void onNext(Response response) {
+                if (response.isResult()){
+                    transportSession.setLogin(true);
+                    getTransport(user.get("token"), user.get("email"), reqUser);
+                }else {
+                    Intent intent = new Intent(MapActivity.this, TransportAddActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         }));
+    }
+
+    private void getTransport(String token, String email, User reqUser){
+        mSubscriptions.add(NetworkUtil.getRetrofit(token)
+                .getUserTransport(email, reqUser)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Transport>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(Transport transport) {
+                        application.setTransportSelected(true);
+                        application.setTransport(transport);
+                        if(!isLastState){
+                            getLastState(user.get("token"),user.get("email"),application.getUser());
+                        }
+                    }
+                }));
     }
 
     private void emitTransportList(Location location){
@@ -864,7 +891,9 @@ public class MapActivity extends AppCompatActivity implements LocationListener, 
                     if(location_changed){
                         getProfile(user.get("token"),user.get("email"));
                     }
-                    btGo.setVisibility(View.INVISIBLE);
+                    if(transportSession.isLoggedIn()){
+                        btGo.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
         }

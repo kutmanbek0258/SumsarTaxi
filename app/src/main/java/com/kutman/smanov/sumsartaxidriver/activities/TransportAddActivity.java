@@ -21,7 +21,7 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.kutman.smanov.sumsartaxidriver.R;
-import com.kutman.smanov.sumsartaxidriver.TransportApplication;
+import com.kutman.smanov.sumsartaxidriver.TaxiDriverApplication;
 import com.kutman.smanov.sumsartaxidriver.data.UserData;
 import com.kutman.smanov.sumsartaxidriver.models.Response;
 import com.kutman.smanov.sumsartaxidriver.models.Transport;
@@ -58,7 +58,7 @@ public class TransportAddActivity extends AppCompatActivity {
     private UserData userData;
     private HashMap<String, String> user;
 
-    private TransportApplication application;
+    private TaxiDriverApplication application;
 
     private CompositeSubscription mSubscriptions;
 
@@ -75,7 +75,7 @@ public class TransportAddActivity extends AppCompatActivity {
 
         session = new TransportSession(getApplicationContext());
 
-        application = (TransportApplication)getApplication();
+        application = (TaxiDriverApplication)getApplication();
 
         mSubscriptions = new CompositeSubscription();
 
